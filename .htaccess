@@ -1,0 +1,6 @@
+Options -Indexes
+
+# Zablokuj bezpośredni dostęp do plików SQL i konfiguracyjnych
+<FilesMatch "\.(sql|sh)$">
+    Require all denied
+</FilesMatch>
