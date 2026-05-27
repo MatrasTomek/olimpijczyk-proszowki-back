@@ -20,7 +20,11 @@ if (!in_array($file['type'], $allowed, true)) {
 
 $ext      = pathinfo($file['name'], PATHINFO_EXTENSION);
 $filename = bin2hex(random_bytes(8)) . '.' . strtolower($ext);
-$dest     = __DIR__ . '/../../../uploads/presence/' . $filename;
+$uploadDir = __DIR__ . '/../../uploads/presence/';
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+}
+$dest = $uploadDir . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $dest)) {
     jsonError(500, 'Błąd podczas zapisywania pliku');
