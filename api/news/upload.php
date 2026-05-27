@@ -12,9 +12,7 @@ requireAuth();
 
 if (empty($_FILES['file'])) jsonError(400, 'Brak pliku');
 
-$file     = $_FILES['file'];
-$title    = trim($_POST['title'] ?? '');
-$category = trim($_POST['category'] ?? 'Inne');
+$file = $_FILES['file'];
 
 $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 if (!in_array($file['type'], $allowed, true)) {
@@ -23,7 +21,7 @@ if (!in_array($file['type'], $allowed, true)) {
 
 $ext       = pathinfo($file['name'], PATHINFO_EXTENSION);
 $filename  = bin2hex(random_bytes(8)) . '.' . strtolower($ext);
-$uploadDir = __DIR__ . '/../../uploads/gallery/';
+$uploadDir = __DIR__ . '/../../uploads/news/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
@@ -33,7 +31,4 @@ if (!move_uploaded_file($file['tmp_name'], $dest)) {
     jsonError(500, 'Błąd podczas zapisywania pliku');
 }
 
-$stmt = getDb()->prepare('INSERT INTO gallery_images (title, category, filename) VALUES (?, ?, ?)');
-$stmt->execute([$title ?: null, $category, $filename]);
-
-jsonOk(['id' => (int)getDb()->lastInsertId(), 'filename' => $filename], 201);
+jsonOk(['filename' => $filename, 'path' => 'uploads/news/' . $filename], 201);
